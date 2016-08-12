@@ -1,5 +1,7 @@
+// @flow weak
 import autoBind from '../utils/AutoBind';
 import * as NavigatorEvent from  '../NavigatorEvent';
+import $ from 'jquery';
 import NavigationState from '../NavigationState';
 	                  let _usingPushState,
 		                                        _rootUrl,
@@ -21,7 +23,7 @@ import NavigationState from '../NavigationState';
 		                                        usePushState(rootUrl) {
 			                                        if (_started) {
 				                                        throw new Error('Cannot switch to using push states after start was called');
-				                                        return;
+
 			}
 
 			                                        _usingPushState = this.supportsPushState;
@@ -50,7 +52,7 @@ import NavigationState from '../NavigationState';
 		                                        start() {
 			                                        if (_started) {
 				                                        throw new Error('Already started');
-				                                        return;
+
 			}
 
 			                                        _started = true;
@@ -64,7 +66,7 @@ import NavigationState from '../NavigationState';
 				                                        $(window).on('hashchange', this._onUrlChange);
 			}
 
-			                                    const STATE_CHANGED = navigatorjs.NavigatorEvent.STATE_CHANGED;
+			                                    const STATE_CHANGED = NavigatorEvent.STATE_CHANGED;
 
 			                                        _navigator.on(STATE_CHANGED, this._onStateChanged);
 		},

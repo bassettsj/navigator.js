@@ -47,7 +47,7 @@ module.exports = function karmaConfig(config) {
             'public/js/vendors/backbone/backbone.js',
             'public/js/vendors/injector.js/injector-js.js',
             'public/js/vendors/backbone-command/backbone-command.js',
-            'public/js/dist/navigator-js.js',
+            'test.js',
             'spec/**/*Spec.js'
         ],
 
@@ -57,7 +57,7 @@ module.exports = function karmaConfig(config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'public/js/dist/navigator-js.js': ['webpack', 'sourcemap'],
+            'test.js': ['webpack', 'sourcemap'],
             'spec/**/*Spec.js': ['webpack', 'sourcemap']
         },
 

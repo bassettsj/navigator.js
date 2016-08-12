@@ -1,4 +1,4 @@
-// @flow
+// @flow weak
 export const TRANSITION_STATUS_UPDATED = 'TRANSITION_STATUS_UPDATED';
 export const STATE_REQUESTED = 'STATE_REQUESTED';
 export const STATE_CHANGED = 'STATE_CHANGED';

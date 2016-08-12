@@ -1,4 +1,4 @@
-// @flow
+// @flow weak
 import NavigationState from '../NavigationState';
 function StateCommandMap(navigator, injector) {
   this._navigator = navigator;

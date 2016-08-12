@@ -1,5 +1,6 @@
 [ignore]
-
+.*/Deferred.js.flow
+.*/shallowEqual.js.flow
 [include]
 
 [libs]

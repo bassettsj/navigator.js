@@ -1,12 +1,13 @@
-// @flow
+// @flow weak
 import NavigationState from './NavigationState';
 import * as NavigationBehaviors from './NavigationBehaviors';
 import * as TransitionStatus from './transition/TransitionStatus';
 import * as NavigatorEvent from './NavigatorEvent';
+import * as NavigationResponderBehaviors from './NavigationResponderBehaviors';
 import AsynchResponders from './AsynchResponders';
 import TransitionCompleteDelegate from './transition/TransitionCompleteDelegate';
 import ValidationPreparedDelegate from './transition/ValidationPreparedDelegate';
-import autoBind from './utils/autoBind';
+import autoBind from './utils/AutoBind';
 import ResponderLists from './ResponderLists';
 import $ from 'jquery';
 //
@@ -75,7 +76,7 @@ const _modify = function (addition, responder, pathsOrStates, behaviorString) {
   }
 
     // TODO: Build in more strict validation?
-  if (!NavigationBehaviors.implementsBehaviorInterface(responder, matchingInterface)) {
+  if (!NavigationResponderBehaviors.implementsBehaviorInterface(responder, matchingInterface)) {
     throw new Error('Responder ' + responder + ' should implement ' + matchingInterface + ' to respond to ' + behaviorString);
   }
   if (addition) {
@@ -169,7 +170,7 @@ const _hasRegisteredResponder = function (state, optionalInterface) {
           respondersLength = respondersForPath.length;
           for (j = 0; j < respondersLength; j++) {
             responder = respondersForPath[j];
-            if (NavigationBehaviors.implementsBehaviorInterface(responder, optionalInterface)) {
+            if (NavigationResponderBehaviors.implementsBehaviorInterface(responder, optionalInterface)) {
               return true;
             }
           }
@@ -330,7 +331,7 @@ _flow.transitionOut = function () {
             // if the responder is not already hidden or disappearing, trigger the transitionOut:
       if (TransitionStatus.HIDDEN < _statusByResponderID[responderID] && _statusByResponderID[responderID] < TransitionStatus.DISAPPEARING &&
                 // We could also not be hidden or disappearing but performing a state swap.
-                NavigationBehaviors.implementsBehaviorInterface(responder, 'IHasStateTransition')) {
+                NavigationResponderBehaviors.implementsBehaviorInterface(responder, 'IHasStateTransition')) {
         _statusByResponderID[responderID] = TransitionStatus.DISAPPEARING;
         waitForResponders.push(responder);
 
@@ -638,7 +639,7 @@ _validation.notifyValidationPrepared = function (validatorResponder, truncatedSt
                 // logger.warn("Asynchronously invalidated by " + validatorResponder);
       _asyncInvalidated = true;
 
-      if (NavigationBehaviors.implementsBehaviorInterface(validatorResponder, 'IHasStateRedirection')) {
+      if (NavigationResponderBehaviors.implementsBehaviorInterface(validatorResponder, 'IHasStateRedirection')) {
         _inlineRedirectionState = validatorResponder.redirect(truncatedState, fullState);
       }
     }
@@ -731,11 +732,11 @@ let _validate = function (stateToValidate, allowRedirection, allowAsyncValidatio
           responder = validateByPathList[i];
 
                         // check for optional validation
-          if (NavigationBehaviors.implementsBehaviorInterface(responder, 'IHasStateValidationOptionalAsync') && !responder.willValidate(remainderState, unvalidatedState)) {
+          if (NavigationResponderBehaviors.implementsBehaviorInterface(responder, 'IHasStateValidationOptionalAsync') && !responder.willValidate(remainderState, unvalidatedState)) {
             continue;
           }
 
-          if (NavigationBehaviors.implementsBehaviorInterface(responder, 'IHasStateValidationAsync')) {
+          if (NavigationResponderBehaviors.implementsBehaviorInterface(responder, 'IHasStateValidationAsync')) {
             _asyncValidationOccurred = true;
 
             callOnPrepared = new ValidationPreparedDelegate(responder, remainderState, unvalidatedState, this, _validation).call;
@@ -752,12 +753,12 @@ let _validate = function (stateToValidate, allowRedirection, allowAsyncValidatio
       for (i = 0; i < validateByPathList.length; i++) {
         responder = validateByPathList[i];
                     // skip async validators, we handled them a few lines back.
-        if (NavigationBehaviors.implementsBehaviorInterface(responder, 'IHasStateValidationAsync')) {
+        if (NavigationResponderBehaviors.implementsBehaviorInterface(responder, 'IHasStateValidationAsync')) {
           continue;
         }
 
                     // check for optional validation
-        if (NavigationBehaviors.implementsBehaviorInterface(responder, 'IHasStateValidationOptional') && !responder.willValidate(remainderState, unvalidatedState)) {
+        if (NavigationResponderBehaviors.implementsBehaviorInterface(responder, 'IHasStateValidationOptional') && !responder.willValidate(remainderState, unvalidatedState)) {
           continue;
         }
 
@@ -767,7 +768,7 @@ let _validate = function (stateToValidate, allowRedirection, allowAsyncValidatio
                         // logger.warn("Invalidated by validator: " + responder);
           invalidated = true;
 
-          if (allowRedirection && NavigationBehaviors.implementsBehaviorInterface(responder, 'IHasStateRedirection')) {
+          if (allowRedirection && NavigationResponderBehaviors.implementsBehaviorInterface(responder, 'IHasStateRedirection')) {
             _inlineRedirectionState = responder.redirect(remainderState, unvalidatedState);
           }
 
@@ -856,7 +857,7 @@ let _initializeIfNeccessary = function (responderList) {
         //			for each (var responder : INavigationResponder in responderList) {
   for (i = 0; i < responderList.length; i++) {
     responder = responderList[i];
-    if (_statusByResponderID[responder.__navigatorjs.id] === TransitionStatus.UNINITIALIZED && NavigationBehaviors.implementsBehaviorInterface(responder, 'IHasStateInitialization')) {
+    if (_statusByResponderID[responder.__navigatorjs.id] === TransitionStatus.UNINITIALIZED && NavigationResponderBehaviors.implementsBehaviorInterface(responder, 'IHasStateInitialization')) {
                 // first initialize the responder.
       responder.initializeByNavigator();
       _statusByResponderID[responder.__navigatorjs.id] = TransitionStatus.INITIALIZED;

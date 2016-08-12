@@ -1,6 +1,8 @@
+// @flow weak
 const ReactRecipe = require('./ReactRecipe');
 const BackboneRecipe = require('./BackboneRecipe');
-
+import $ from 'jquery';
+import _ from 'underscore';
 
 	function ViewRecipe() {
 		                                        this._states = [];

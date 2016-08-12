@@ -21,7 +21,9 @@ module.exports = {
     },
     externals: transformUMDExternal({
         'react-dom': 'ReactDOM',
-        react: 'React'
+        react: 'React',
+        jquery: 'jQuery',
+        underscore: '_'
     }),
     module: {
         loaders: [{

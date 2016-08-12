@@ -1,27 +1,56 @@
+// @flow weak
+import AsynchResponders from './AsynchResponders';
+import Navigator from './Navigator';
+import ResponderLists from './ResponderLists';
+import History from './History';
+import * as NavigationBehaviors from './NavigationBehaviors';
+import * as NavigationResponderBehaviors from './NavigationResponderBehaviors';
+import NavigationState from './NavigationState';
+import * as NavigatorEvent from './NavigatorEvent';
+import Bind from './utils/Bind';
+import AutoBind from './utils/AutoBind';
+import TransitionCompleteDelegate from './transition/TransitionCompleteDelegate';
+import * as TransitionStatus from './transition/TransitionStatus';
+import ValidationPreparedDelegate from './transition/ValidationPreparedDelegate';
+import StateCommandMap from './integration/StateCommandMap';
+import StateUrlSyncer from './integration/StateUrlSyncer';
+import StateViewMap from './integration/StateViewMap';
+import ViewRecipe from './integration/ViewRecipe';
+import DebugConsole from './features/DebugConsole';
+
+const utils = Object.freeze({
+    Bind,
+    AutoBind,
+});
+const transition = Object.freeze({
+    TransitionCompleteDelegate,
+    TransitionStatus,
+    ValidationPreparedDelegate,
+});
+const integration = Object.freeze({
+    StateCommandMap,
+    StateUrlSyncer,
+    StateViewMap,
+    ViewRecipe,
+});
+const features = Object.freeze({
+    DebugConsole,
+});
+
 // navigator-main
-require('./Navigator');
-require('./ResponderLists');
-require('./AsynchResponders');
-require('./History');
-require('./NavigationBehaviors');
-require('./NavigationResponderBehaviors');
-require('./NavigationState');
-require('./NavigatorEvent');
+const navigatorjs = Object.freeze({
+    AsynchResponders,
+    Navigator,
+    ResponderLists,
+    History,
+    NavigationBehaviors,
+    NavigationResponderBehaviors,
+    NavigationState,
+    NavigatorEvent,
+    utils,
+    transition,
+    integration,
+    features,
+});
 
-// utils
-require('./utils/Bind');
-require('./utils/AutoBind');
-
-// transition
-require('./transition/TransitionCompleteDelegate');
-require('./transition/TransitionStatus');
-require('./transition/ValidationPreparedDelegate');
-
-// integration
-require('./integration/StateCommandMap');
-require('./integration/StateUrlSyncer');
-require('./integration/StateViewMap');
-require('./integration/ViewRecipe');
-
-// features
-require('./features/DebugConsole');
+module.exports = navigatorjs;

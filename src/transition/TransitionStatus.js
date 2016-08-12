@@ -1,4 +1,4 @@
-
+// @flow weak
 export const UNINITIALIZED = -2;
 export const INITIALIZED = -1;
 export const HIDDEN = 1;

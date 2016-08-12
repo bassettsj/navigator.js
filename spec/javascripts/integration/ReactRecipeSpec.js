@@ -1,4 +1,4 @@
-var BackboneRecipe = require('../../../public/js/navigator-js/integration/BackboneRecipe');
+var BackboneRecipe = require('../../../src/integration/BackboneRecipe');
 var ReactTestUtils = require('react-addons-test-utils');
 var jQuery = require('jquery');
 var React = require('react');

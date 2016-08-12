@@ -4,3 +4,4 @@
 node_modules
 public/js/vendors/
 coverage
+*.log

@@ -1,4 +1,4 @@
-// @flow
+// @flow weak
 import autoBind from './utils/AutoBind';
 import { STATE_CHANGED } from './NavigatorEvent';
 import Navigator from './Navigator';

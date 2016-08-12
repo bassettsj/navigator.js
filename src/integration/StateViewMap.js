@@ -1,3 +1,4 @@
+// @flow weak
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import { STATE_REQUESTED } from '../NavigatorEvent';

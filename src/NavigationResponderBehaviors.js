@@ -1,4 +1,4 @@
-
+// @flow weak
 export const IHasStateInitialization = { name: 'IHasStateInitialization', methods: ['initializeByNavigator'] };
 export const IHasStateValidation = { name: 'IHasStateValidation', methods: ['validate'] };
 export const IHasStateValidationAsync = { name: 'IHasStateValidationAsync', extends: ['IHasStateValidation'], methods: ['prepareValidation'] };

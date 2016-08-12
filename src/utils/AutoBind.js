@@ -1,3 +1,5 @@
+import $ from 'jquery';
+// @flow weak
 export default function autoBind(object, context) {
   let key;
   let method;

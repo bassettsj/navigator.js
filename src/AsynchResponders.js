@@ -1,4 +1,4 @@
-
+// @flow weak
 const AsynchResponders = function () {
   this._responders = [];
 };

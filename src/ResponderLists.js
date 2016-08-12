@@ -1,4 +1,4 @@
-// @flow
+// @flow weak
 const ResponderLists = function () {
 	                                        this.validateByPath = {};
 	                                        this.updateByPath = {};

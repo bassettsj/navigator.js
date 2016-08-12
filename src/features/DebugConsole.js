@@ -1,4 +1,4 @@
-// @flow
+// @flow weak
 import $ from 'jquery';
 import * as NavigationResponderBehaviors from '../NavigationResponderBehaviors';
 import * as TransitionStatus from '../transition/TransitionStatus';

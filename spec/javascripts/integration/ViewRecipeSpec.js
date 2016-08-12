@@ -1,6 +1,7 @@
-var BackboneRecipe = require('../../../public/js/navigator-js/integration/BackboneRecipe');
-var ReactRecipe = require('../../../public/js/navigator-js/integration/ReactRecipe');
+var BackboneRecipe = require('../../../src/integration/BackboneRecipe');
+var ReactRecipe = require('../../../src/integration/ReactRecipe');
 var React = require('react');
+
 
 describe('ViewRecipe', function() {
 	var viewRecipe;

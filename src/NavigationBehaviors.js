@@ -1,3 +1,4 @@
+// @flow weak
 /**
  * Will show when the state matches, will hide when it doesn't
  */

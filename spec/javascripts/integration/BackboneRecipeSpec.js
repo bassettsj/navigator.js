@@ -1,4 +1,4 @@
-var BackboneRecipe = require('../../../public/js/navigator-js/integration/BackboneRecipe');
+var BackboneRecipe = require('../../../src/integration/BackboneRecipe');
 var jQuery = require('jquery');
 
 describe('Backbone Recipe', function() {
