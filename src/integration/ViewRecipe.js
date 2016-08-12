@@ -5,100 +5,100 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 	function ViewRecipe() {
-		                                        this._states = [];
-		                                        this._viewClass = null;
-		                                        this._viewArguments = [];
-		                                        this._viewInstance = null;
-		                                        this._insideSelector = null;
-		                                        this._parentRecipe = null;
-		                                        this._viewType = null;
+		                                                                                                                                            this._states = [];
+		                                                                                                                                            this._viewClass = null;
+		                                                                                                                                            this._viewArguments = [];
+		                                                                                                                                            this._viewInstance = null;
+		                                                                                                                                            this._insideSelector = null;
+		                                                                                                                                            this._parentRecipe = null;
+		                                                                                                                                            this._viewType = null;
 	}
 
 	// PUBLIC API
 	                    ViewRecipe.prototype = {
 
-		                                        addState(navigationState) {
-			                                      let i, existingState, length = this._states.length;
+		                                                                                                                                            addState(navigationState) {
+			                                                                                                                                          let i, existingState, length = this._states.length;
 
-			                                        for (i = 0; i < length; i++) {
-				                                        existingState = this._states[i];
+			                                                                                                                                            for (i = 0; i < length; i++) {
+				                                                                                                                                            existingState = this._states[i];
 
-				                                        if (existingState.getPath() === navigationState.getPath()) {
-					                                        return;
+				                                                                                                                                            if (existingState.getPath() === navigationState.getPath()) {
+					                                                                                                                                            return;
 				}
 			}
 
-			                                        this._states.push(navigationState);
+			                                                                                                                                            this._states.push(navigationState);
 
-			                                        return this;
+			                                                                                                                                            return this;
 		},
 
-		                                        getStates() {
-			                                        return this._states;
+		                                                                                                                                            getStates() {
+			                                                                                                                                            return this._states;
 		},
 
-		                                        toView(viewClass) {
-			                                        this._viewClass = viewClass;
+		                                                                                                                                            toView(viewClass) {
+			                                                                                                                                            this._viewClass = viewClass;
 
-			                                        _.extend(this, BackboneRecipe);
+			                                                                                                                                            _.extend(this, BackboneRecipe);
 
-			                                        return this;
+			                                                                                                                                            return this;
 		},
 
-		                                        toComponent(viewClass) {
-			                                        this._viewClass = viewClass;
+		                                                                                                                                            toComponent(viewClass) {
+			                                                                                                                                            this._viewClass = viewClass;
 
-			                                        _.extend(this, ReactRecipe);
+			                                                                                                                                            _.extend(this, ReactRecipe);
 
-			                                        return this;
+			                                                                                                                                            return this;
 		},
 
-		                                        getViewClass() {
-			                                        return this._viewClass;
+		                                                                                                                                            getViewClass() {
+			                                                                                                                                            return this._viewClass;
 		},
 
-		                                        getViewInstance() {
-			                                        return this._viewInstance;
+		                                                                                                                                            getViewInstance() {
+			                                                                                                                                            return this._viewInstance;
 		},
 
-		                                        getRootEl() {
-			                                        console.warn('Method getRootEl should be implemented by viewRecipe');
+		                                                                                                                                            getRootEl() {
+			                                                                                                                                            console.warn('Method getRootEl should be implemented by viewRecipe');
 		},
 
-		                                        isMounted() {
-			                                        console.warn('Method isMounted should be implemented by viewRecipe');
+		                                                                                                                                            isMounted() {
+			                                                                                                                                            console.warn('Method isMounted should be implemented by viewRecipe');
 		},
 
-		                                        isInstantiated() {
-			                                        return this._viewInstance != null;
+		                                                                                                                                            isInstantiated() {
+			                                                                                                                                            return this._viewInstance != null;
 		},
 
-		                                        withArguments() {
-			                                        if (arguments.length > 5) {
-				                                        throw new Error('Uncle Bob says you want to use too many arguments');
+		                                                                                                                                            withArguments() {
+			                                                                                                                                            if (arguments.length > 5) {
+				                                                                                                                                            throw new Error('Uncle Bob says you want to use too many arguments');
 			}
-			                                        this._viewArguments = arguments;
+			                                                                                                                                            this._viewArguments = arguments;
 
-			                                        return this;
+			                                                                                                                                            return this;
 		},
 
-		                                        inside(selector) {
-			                                        this._insideSelector = selector;
+		                                                                                                                                            inside(selector) {
+			                                                                                                                                            this._insideSelector = selector;
 
-			                                        return this;
+			                                                                                                                                            return this;
 		},
 
-		                                        getInsideSelector() {
-			                                        return this._insideSelector;
+		                                                                                                                                            getInsideSelector() {
+			                                                                                                                                            return this._insideSelector;
 		},
 
-		                                        withParent(parentRecipe) {
-			                                        this._parentRecipe = parentRecipe;
-			                                        return this;
+		                                                                                                                                            withParent(parentRecipe) {
+			                                                                                                                                            this._parentRecipe = parentRecipe;
+			                                                                                                                                            return this;
 		},
 
-		                                        getParentRecipe() {
-			                                        return this._parentRecipe;
+		                                                                                                                                            getParentRecipe() {
+			                                                                                                                                            return this._parentRecipe;
 		}
 	};
 

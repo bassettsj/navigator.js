@@ -8,22 +8,22 @@ export const SWAPPING = 4;
 export const DISAPPEARING = 5;
 
 export function toString(status) {
-  switch (status) {
-    case UNINITIALIZED:
-      return 'UNINITIALIZED';
-    case INITIALIZED:
-      return 'INITIALIZED';
-    case HIDDEN:
-      return 'HIDDEN';
-    case APPEARING:
-      return 'APPEARING';
-    case SHOWN:
-      return 'SHOWN';
-    case SWAPPING:
-      return 'SWAPPING';
-    case DISAPPEARING:
-      return 'DISAPPEARING';
-    default:
-      return 'UNKNOWN';
-  }
+    switch (status) {
+        case UNINITIALIZED:
+            return 'UNINITIALIZED';
+        case INITIALIZED:
+            return 'INITIALIZED';
+        case HIDDEN:
+            return 'HIDDEN';
+        case APPEARING:
+            return 'APPEARING';
+        case SHOWN:
+            return 'SHOWN';
+        case SWAPPING:
+            return 'SWAPPING';
+        case DISAPPEARING:
+            return 'DISAPPEARING';
+        default:
+            return 'UNKNOWN';
+    }
 }
