@@ -16,6 +16,8 @@
         "no-else-return": 1,
         "max-len": [2, 150, 1],
         "no-underscore-dangle": 1,
-        "no-restricted-syntax": 0
+        "no-restricted-syntax": 0,
+        "import/no-extraneous-dependencies": ["warning", {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}]
+
     }
 }
