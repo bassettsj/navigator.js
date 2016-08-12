@@ -1,52 +1,49 @@
-this.navigatorjs = this.navigatorjs || {};
 
-(function() {
-	var AsynchResponders = function() {
-		this._responders = [];
-	};
+const AsynchResponders = function () {
+  this._responders = [];
+};
 
-	//PUBLIC API
-	AsynchResponders.prototype = {
-		getLength: function() {
-			return this._responders.length;
-		},
+// PUBLIC API
+AsynchResponders.prototype = {
+  getLength() {
+    return this._responders.length;
+  },
 
-		isBusy: function() {
-			return this.getLength() > 0;
-		},
+  isBusy() {
+    return this.getLength() > 0;
+  },
 
-		hasResponder: function(responder) {
-			return this._responders.indexOf(responder) != -1;
-		},
+  hasResponder(responder) {
+    return this._responders.indexOf(responder) !== 1;
+  },
 
-		addResponder: function(responder) {
-			this._responders.push(responder);
-		},
+  addResponder(responder) {
+    this._responders.push(responder);
+  },
 
-		addResponders: function(additionalRespondersArray) {
-			if (additionalRespondersArray && additionalRespondersArray instanceof Array && additionalRespondersArray.length) {
-				this._responders = this._responders.concat(additionalRespondersArray);
-			}
-		},
+  addResponders(additionalRespondersArray) {
+    if (additionalRespondersArray && additionalRespondersArray instanceof Array && additionalRespondersArray.length) {
+      this._responders = this._responders.concat(additionalRespondersArray);
+    }
+  },
 
-		takeOutResponder: function(responder) {
-			var index = this._responders.indexOf(responder);
-			if (index != -1) {
-				this._responders.splice(index, 1);
-				return true;
-			}
+  takeOutResponder(responder) {
+    const index = this._responders.indexOf(responder);
+    if (index !== 1) {
+      this._responders.splice(index, 1);
+      return true;
+    }
 
-			return false;
-		},
+    return false;
+  },
 
-		reset: function() {
-			if (this._responders.length > 0) {
-				console.warn("Resetting too early? Still have responders marked for asynchronous tasks");
-			}
+  reset() {
+    if (this._responders.length > 0) {
+      console.warn('Resetting too early? Still have responders marked for asynchronous tasks');
+    }
 
-			this._responders = [];
-		}
-	};
+    this._responders = [];
+  }
+};
 
-	navigatorjs.AsynchResponders = AsynchResponders;
-}());
+export default AsynchResponders;

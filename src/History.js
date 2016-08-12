@@ -1,297 +1,290 @@
-this.navigatorjs = this.navigatorjs || {};
+// @flow
+import autoBind from './utils/AutoBind';
+import { STATE_CHANGED } from './NavigatorEvent';
+import Navigator from './Navigator';
+/**
+* History manager for the navigatorjs.Navigator
+*
+* @example
+*	<code>
+*
+*		// Create the normal navigator
+*		var navigator = new navigatorjs.Navigator();
+*
+*		// Create the history and supply the navigator it should manage
+*		var history = new navigatorjs.History(navigator);
+*
+*		// Navigate to states as you normally would
+*		navigator.request('/my/state');
+*
+*		// Go back in time
+*		history.back();
+*
+*	</code>
+*
+* @author Laurent van Dommelen
+* @created 11 oct 2013
+*
+* @param {navigatorjs.Navigator} navigator
+*/
+function History(navigator: Navigator) {
+    // Bind the methods to this scope
+  autoBind(this, this);
+    // Initialize the instance
+  this._initialize(navigator);
+}
 
-(function() {
+// Default max history length, don't change this,
+// change the maxLength instance property
+History.MAX_HISTORY_LENGTH = 100;
 
-	/**
-	 * History manager for the navigatorjs.Navigator
-	 * 
-	 * @example 
-	 *	<code>
-	 *		
-	 *		// Create the normal navigator
-	 *		var navigator = new navigatorjs.Navigator();
-	 *		
-	 *		// Create the history and supply the navigator it should manage
-	 *		var history = new navigatorjs.History(navigator);
-	 *
-	 *		// Navigate to states as you normally would
-	 *		navigator.request('/my/state');
-	 *		
-	 *		// Go back in time
-	 *		history.back();
-	 *		
-	 *	</code>
-	 *
-	 * @author Laurent van Dommelen
-	 * @created 11 oct 2013
-	 * 
-	 * @param {navigatorjs.Navigator} navigator
-	 */
-	var History = function(navigator) {
+// Navigation direction types
+History.DIRECTION_BACK = -1;
+History.DIRECTION_NORMAL = 0;
+History.DIRECTION_FORWARD = 1;
 
-		// Bind the methods to this scope
-		navigatorjs.utils.AutoBind(this, this);
+/**
+* Instance properties
+*/
+History.prototype = {
 
-		// Initialize the instance
-		this._initialize(navigator);
-	};
+    // The navigator it is controlling
+  _navigator: null,
 
-	// Default max history length, don't change this, 
-	// change the maxLength instance property
-	History.MAX_HISTORY_LENGTH = 100;
+    // The history, last state is at start of Array
+  _history: null,
 
-	// Navigation direction types
-	History.DIRECTION_BACK = -1;
-	History.DIRECTION_NORMAL = 0;
-	History.DIRECTION_FORWARD = 1;
+    // The current position in history
+  _historyPosition: 0,
 
-	/**
-	 * Instance properties
-	 */
-	History.prototype = {
+    // The navigator doesn't know anything about going forward or back.
+    // Therefore, we need to keep track of the direction.
+    // This is changed when the forward or back methods are called.
+  _navigationDirection: History.DIRECTION_NORMAL,
 
-		// The navigator it is controlling
-		_navigator: null,
+    // The max number of history states
+  maxLength: History.MAX_HISTORY_LENGTH,
 
-		// The history, last state is at start of Array
-		_history: null,
+    /**
+    * Create the history manager. When navigating back and forword, the history is maintained.
+    * It is truncated when navigating to a state naturally
+    *
+    * @param {navigatorjs.Navigator} navigator
+    * @param {Object} [options]
+    */
+  _initialize(navigator, options) {
+        // Setup the options
+    if (options) {
+      this.maxLength = options.maxLength || this.maxLength;
+    }
 
-		// The current position in history
-		_historyPosition: 0,
+        // Create the history array containing the NavigationState objects
+    this._history = [];
 
-		// The navigator doesn't know anything about going forward or back.
-		// Therefore, we need to keep track of the direction.
-		// This is changed when the forward or back methods are called.
-		_navigationDirection: History.DIRECTION_NORMAL,
+        // Listen to changes on the navigator
+    this._navigator = navigator;
+    this._navigator.on(STATE_CHANGED, this._handleStateChange);
+  },
 
-		// The max number of history states
-		maxLength: History.MAX_HISTORY_LENGTH,
+    /**
+    * Go back in the history
+    *
+    * @param {Number} [steps=1] The number of steps to go back in history
+    * @return {Boolean} Returns false if there was no previous state
+    */
+  back(steps) {
+        // Check if we know history
+    if (this._historyPosition === this._history.length - 1) {
+      return false;
+    }
 
-		/**
-		 * Create the history manager. When navigating back and forword, the history is maintained. 
-		 * It is truncated when navigating to a state naturally
-		 * 
-		 * @param {navigatorjs.Navigator} navigator
-		 * @param {Object} [options]
-		 */
-		_initialize: function(navigator, options) {
+        // Set to 1 by default
+    steps = steps || 1;
 
-			// Setup the options
-			if (options) {
-				this.maxLength = options.maxLength || this.maxLength;
-			}
+        // Set the history position and navigate to it
+    this._historyPosition = Math.min(this._history.length - 1, this._historyPosition + steps);
+    this._navigationDirection = History.DIRECTION_BACK;
+    this._navigateToCurrentHistoryPosition();
+    return true;
+  },
 
-			// Create the history array containing the NavigationState objects
-			this._history = [];
+    /**
+    * Go forward in the history
+    *
+    * @param {Number} [steps=1] The number of steps to go forward in history
+    * @return {Boolean} Returns false if there was no next state
+    */
+  forward(steps) {
+    if (this._historyPosition === 0) {
+      return false;
+    }
 
-			// Listen to changes on the navigator
-			this._navigator = navigator;
-			this._navigator.on(navigatorjs.NavigatorEvent.STATE_CHANGED, this._handleStateChange);
-		},
+        // Set to 1 by default
+    steps = steps || 1;
 
-		/**
-		 * Go back in the history
-		 * 
-		 * @param {Number} [steps=1] The number of steps to go back in history
-		 * @return {Boolean} Returns false if there was no previous state
-		 */
-		back: function(steps) {
+        // Set the history position and navigate to it
+    this._historyPosition = Math.max(0, this._historyPosition - steps);
+    this._navigationDirection = History.DIRECTION_FORWARD;
+    this._navigateToCurrentHistoryPosition();
+    return true;
+  },
 
-			// Check if we know history
-			if (this._historyPosition == this._history.length - 1) {
-				return false;
-			}
+    /**
+    * Go back in the history and return that NavigationState
+    *
+    * @param {Number} [steps=1] The number of steps to go back in history
+    * @return {navigatorjs.NavigationState} The found state or null if no state was found
+    */
+  getPreviousState(steps) {
+        // Cannot go beyond the first entry in history
+    if (this._history.length === 0 || this._historyPosition === Math.max(0, this._history.length - 1)) {
+      return null;
+    }
 
-			// Set to 1 by default
-			steps = steps || 1;
+        // Set to 1 by default
+    steps = steps || 1;
 
-			// Set the history position and navigate to it
-			this._historyPosition = Math.min(this._history.length - 1, this._historyPosition + steps);
-			this._navigationDirection = History.DIRECTION_BACK;
-			this._navigateToCurrentHistoryPosition();
-			return true;
-		},
+        // Fetch the requested state in history
+    const position = Math.min(this._history.length - 1, Math.max(0, this._historyPosition + steps));
+    return this._history[position];
+  },
 
-		/**
-		 * Go forward in the history
-		 * 
-		 * @param {Number} [steps=1] The number of steps to go forward in history
-		 * @return {Boolean} Returns false if there was no next state
-		 */
-		forward: function(steps) {
-			if (this._historyPosition === 0) {
-				return false;
-			}
+    /**
+    * Go forward in the history and return that NavigationState
+    *
+    * @param {Number} [steps=1] The number of steps to go back in history
+    * @return {navigatorjs.NavigationState} The found state or null if no state was found
+    */
+  getNextState(steps) {
+        // Cannot look into the future
+    if (this._history.length === 0 || this._historyPosition === 0) {
+      return null;
+    }
 
-			// Set to 1 by default
-			steps = steps || 1;
+        // Set to 1 by default
+    steps = steps || 1;
 
-			// Set the history position and navigate to it
-			this._historyPosition = Math.max(0, this._historyPosition - steps);
-			this._navigationDirection = History.DIRECTION_FORWARD;
-			this._navigateToCurrentHistoryPosition();
-			return true;
-		},
+        // Fetch the requested state in history
+    const position = Math.max(0, this._historyPosition - steps);
+    return this._history[position];
+  },
 
-		/**
-		 * Go back in the history and return that NavigationState
-		 * 
-		 * @param {Number} [steps=1] The number of steps to go back in history
-		 * @return {navigatorjs.NavigationState} The found state or null if no state was found
-		 */
-		getPreviousState: function(steps) {
+    /**
+    * Fetch the current NavigationState
+    *
+    * @return {navigatorjs.NavigationState}
+    */
+  getCurrentState() {
+    return this._history[this._historyPosition] || null;
+  },
 
-			// Cannot go beyond the first entry in history
-			if (this._history.length === 0 || this._historyPosition == Math.max(0, this._history.length - 1)) {
-				return null;
-			}
+    /**
+    * Clear the navigation history
+    */
+  clearHistory() {
+    this._history = [];
+    this._historyPosition = 1;
+  },
 
-			// Set to 1 by default
-			steps = steps || 1;
+    /**
+    * Get the full history
+    *
+    * @return {Array} List of navigatorjs.NavigationStates
+    */
+  all() {
+    return this._history;
+  },
 
-			// Fetch the requested state in history
-			var position = Math.min(this._history.length - 1, Math.max(0, this._historyPosition + steps));
-			return this._history[position];
-		},
+    /**
+    * Get the state by historyposition
+    *
+    * @param {Number} position The position in history
+    * @return {navigatorjs.NavigationState} The found state or null if no state was found
+    */
+  getStateByPosition(position) {
+    if (position < 0 || position > this._history.length - 1) {
+      return null;
+    }
+    return this._history[position];
+  },
 
-		/**
-		 * Go forward in the history and return that NavigationState
-		 * 
-		 * @param {Number} [steps=1] The number of steps to go back in history
-		 * @return {navigatorjs.NavigationState} The found state or null if no state was found
-		 */
-		getNextState: function(steps) {
+    /**
+    * Get the first occurence of a state in the history
+    *
+    * @param {navigatorjs.NavigationState} state The NavigationState in history
+    * @return {Number} The found position or false if not found
+    */
+  getPositionByState(state) {
+    return this.getPositionByPath(state.getPath());
+  },
 
-			// Cannot look into the future
-			if (this._history.length === 0 || this._historyPosition === 0) {
-				return null;
-			}
+    /**
+    * Find the first occurence of the path in the history
+    *
+    * @param {String} path
+    * @return {Number} The index or false if not found
+    */
+  getPositionByPath(path) {
+    const count = this.getLength();
+    for (let i = 0; i < count; i++) {
+      if (this._history[i].getPath() === path) {
+        return i;
+      }
+    }
+    return false;
+  },
 
-			// Set to 1 by default
-			steps = steps || 1;
+    /**
+    * Get the number of items in the history
+    *
+    * @return {Number}
+    */
+  getLength() {
+    return this._history.length;
+  },
 
-			// Fetch the requested state in history
-			var position = Math.max(0, this._historyPosition - steps);
-			return this._history[position];
-		},
+    /**
+    * Tell the navigator to go the current historyPosition
+    */
+  _navigateToCurrentHistoryPosition() {
+    const newState = this._history[this._historyPosition];
+    this._navigator.request(newState);
+  },
 
-		/**
-		 * Fetch the current NavigationState
-		 * 
-		 * @return {navigatorjs.NavigationState}
-		 */
-		getCurrentState: function() {
-			return this._history[this._historyPosition] || null;
-		},
+    /**
+    * Check what to do with the new state
+    *
+    * @param {Object} event
+    * @param {Object} update
+    */
+  _handleStateChange(event, update) {
+    const state = update.state;
 
-		/**
-		 * Clear the navigation history
-		 */
-		clearHistory: function() {
-			this._history = [];
-			this._historyPosition = 1;
-		},
+    switch (this._navigationDirection) {
 
-		/**
-		 * Get the full history
-		 * 
-		 * @return {Array} List of navigatorjs.NavigationStates
-		 */
-		all: function() {
-			return this._history;
-		},
+      case History.DIRECTION_BACK:
+        this._navigationDirection = History.DIRECTION_NORMAL;
+        break;
 
-		/**
-		 * Get the state by historyposition
-		 * 
-		 * @param {Number} position The position in history
-		 * @return {navigatorjs.NavigationState} The found state or null if no state was found
-		 */
-		getStateByPosition: function (position) {
-			if (position < 0 || position > this._history.length - 1) {
-				return null;
-			}
-			return this._history[position];
-		},
+      case History.DIRECTION_NORMAL:
 
-		/**
-		 * Get the first occurence of a state in the history
-		 * 
-		 * @param {navigatorjs.NavigationState} state The NavigationState in history
-		 * @return {Number} The found position or false if not found
-		 */
-		getPositionByState: function(state) {
-			return this.getPositionByPath(state.getPath());
-		},
+            // Strip every history state before current
+        this._history.splice(0, this._historyPosition);
 
-		/**
-		 * Find the first occurence of the path in the history
-		 * 
-		 * @param {String} path
-		 * @return {Number} The index or false if not found
-		 */
-		getPositionByPath: function(path) {
-			var count = this.getLength();
-			for (var i = 0; i < count; i++) {
-				if (this._history[i].getPath() == path) {
-					return i;
-				}
-			}
-			return false;
-		},
+            // Add the state at the beginning of the history array
+        this._history.unshift(state);
+        this._historyPosition = 0;
 
-		/**
-		 * Get the number of items in the history
-		 * 
-		 * @return {Number}
-		 */
-		getLength: function() {
-			return this._history.length;
-		},
+            // Truncate the history to the max allowed items
+        this._history.length = Math.min(this._history.length, this.maxLength);
+        break;
 
-		/**
-		 * Tell the navigator to go the current historyPosition
-		 */
-		_navigateToCurrentHistoryPosition: function() {
-			var newState = this._history[this._historyPosition];
-			this._navigator.request(newState);
-		},
-
-		/**
-		 * Check what to do with the new state
-		 *
-		 * @param {Object} event
-		 * @param {Object} update
-		 */
-		_handleStateChange: function(event, update) {
-			var state = update.state;
-
-			switch (this._navigationDirection) {
-
-				case History.DIRECTION_BACK:
-					this._navigationDirection = History.DIRECTION_NORMAL;
-					break;
-
-				case History.DIRECTION_NORMAL:
-
-					// Strip every history state before current
-					this._history.splice(0, this._historyPosition);
-
-					// Add the state at the beginning of the history array
-					this._history.unshift(state);
-					this._historyPosition = 0;
-
-					// Truncate the history to the max allowed items
-					this._history.length = Math.min(this._history.length, this.maxLength);
-					break;
-
-				case History.DIRECTION_FORWARD:
-					this._navigationDirection = History.DIRECTION_NORMAL;
-					break;
-			}
-		}
-	};
-
-	// Copy the History object to the navigatorjs namespace
-	navigatorjs.History = History;
-}());
+      case History.DIRECTION_FORWARD:
+        this._navigationDirection = History.DIRECTION_NORMAL;
+        break;
+      default:
+        break;
+    }
+  }
+};
+export default History;

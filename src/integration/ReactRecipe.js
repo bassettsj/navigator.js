@@ -1,7 +1,9 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const _ = require('underscore');
+const $ = require('jquery');
 
-var ReactRecipe = {
+const ReactRecipe = {
   _type: 'REACT',
 
   // Children array so react element can render with
@@ -15,7 +17,6 @@ var ReactRecipe = {
 
   getViewInstance: function getViewInstance() {
     if (!this._refProxy) {
-
       // Create proxy object to call methods on the react
       // component instance (ref).  This allows us to queue
       // the transition callbacks if the ref is not immediately
@@ -51,18 +52,18 @@ var ReactRecipe = {
         }.bind(this)
       };
     }
-    return this._refProxy
+    return this._refProxy;
   },
 
   // Save reference to our react element instead of
   // view instance like backbone recipe does
 
   initialize: function initialize() {
-    var params = this._viewArguments;
+    const params = this._viewArguments;
 
-    var props = _.extend(
+    const props = _.extend(
       {
-        ref: function(c) {
+        ref: function (c) {
           this._ref = c;
 
           if (this._queuedTransitionIn && this._ref.transitionIn) {
@@ -85,13 +86,13 @@ var ReactRecipe = {
         }.bind(this)
       },
       params[0]
-    )
+    );
 
     this._viewInstance = React.createElement(
       this._viewClass,
       props,
       this._children.map(
-        function(child) {
+        function (child) {
           return child._viewInstance;
         }
       )
@@ -107,7 +108,7 @@ var ReactRecipe = {
 
   // Component is mounted if is not 'null'
 
-  isMounted: function() {
+  isMounted() {
     if (!this.isInstantiated()) {
       this.initialize();
     }
@@ -119,7 +120,7 @@ var ReactRecipe = {
   // recipe to a list of children who will be rendered
   // in this element's props.children
 
-  _showChild: function(child) {
+  _showChild(child) {
     if (this._children.indexOf(child) !== -1) {
       return;
     }
@@ -134,8 +135,8 @@ var ReactRecipe = {
   // Removes a child from this elements props.children
   // and recreates element
 
-  _removeChild: function(child) {
-    var childIndex = this._children.indexOf(child);
+  _removeChild(child) {
+    const childIndex = this._children.indexOf(child);
     if (childIndex !== -1) {
       this._children.splice(childIndex, 1);
     }

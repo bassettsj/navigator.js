@@ -1,32 +1,27 @@
 // navigator-main
-require('./navigator-js/Navigator');
-require('./navigator-js/ResponderLists');
-require('./navigator-js/AsynchResponders');
-require('./navigator-js/History');
-require('./navigator-js/NavigationBehaviors');
-require('./navigator-js/NavigationResponderBehaviors');
-require('./navigator-js/NavigationState');
-require('./navigator-js/NavigatorEvent');
+require('./Navigator');
+require('./ResponderLists');
+require('./AsynchResponders');
+require('./History');
+require('./NavigationBehaviors');
+require('./NavigationResponderBehaviors');
+require('./NavigationState');
+require('./NavigatorEvent');
 
 // utils
-require('./navigator-js/utils/Bind');
-require('./navigator-js/utils/AutoBind');
+require('./utils/Bind');
+require('./utils/AutoBind');
 
 // transition
-require('./navigator-js/transition/TransitionCompleteDelegate');
-require('./navigator-js/transition/TransitionStatus');
-require('./navigator-js/transition/ValidationPreparedDelegate');
-
-// polyfills
-require('./navigator-js/polyfills/array');
+require('./transition/TransitionCompleteDelegate');
+require('./transition/TransitionStatus');
+require('./transition/ValidationPreparedDelegate');
 
 // integration
-require('./navigator-js/integration/StateCommandMap');
-require('./navigator-js/integration/StateUrlSyncer');
-require('./navigator-js/integration/StateViewMap');
-require('./navigator-js/integration/ViewRecipe');
+require('./integration/StateCommandMap');
+require('./integration/StateUrlSyncer');
+require('./integration/StateViewMap');
+require('./integration/ViewRecipe');
 
 // features
-require('./navigator-js/features/DebugConsole');
-
-module.exports = navigatorjs;
+require('./features/DebugConsole');

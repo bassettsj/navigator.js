@@ -1,8 +1,6 @@
-this.navigatorjs = this.navigatorjs || {};
-
-this.navigatorjs.NavigatorEvent = {};
-this.navigatorjs.NavigatorEvent.TRANSITION_STATUS_UPDATED = "TRANSITION_STATUS_UPDATED";
-this.navigatorjs.NavigatorEvent.STATE_REQUESTED = "STATE_REQUESTED";
-this.navigatorjs.NavigatorEvent.STATE_CHANGED = "STATE_CHANGED";
-this.navigatorjs.NavigatorEvent.TRANSITION_STARTED = "TRANSITION_STARTED";
-this.navigatorjs.NavigatorEvent.TRANSITION_FINISHED = "TRANSITION_FINISHED";
+// @flow
+export const TRANSITION_STATUS_UPDATED = 'TRANSITION_STATUS_UPDATED';
+export const STATE_REQUESTED = 'STATE_REQUESTED';
+export const STATE_CHANGED = 'STATE_CHANGED';
+export const TRANSITION_STARTED = 'TRANSITION_STARTED';
+export const TRANSITION_FINISHED = 'TRANSITION_FINISHED';
