@@ -1,20 +1,20 @@
 // @flow weak
 
-function NavigationState(pathStringOrArray) {
-    this._path = '';
+export default class NavigationState {
+    _path: string;
+    constructor(pathStringOrArray) {
+        this._path = '';
 
-    if (pathStringOrArray instanceof Array) {
-        this.setSegments(pathStringOrArray);
-    } else {
-        this.setPath(pathStringOrArray || '');
+        if (Array.isArray(pathStringOrArray)) {
+            this.setSegments(pathStringOrArray);
+        } else {
+            this.setPath(pathStringOrArray || '');
+        }
     }
-}
 
-NavigationState.make = function (stateOrPath) {
-    return stateOrPath instanceof NavigationState ? stateOrPath : new NavigationState(stateOrPath);
-};
-
-NavigationState.prototype = {
+    static make(stateOrPath) {
+        return stateOrPath instanceof NavigationState ? stateOrPath : new NavigationState(stateOrPath);
+    }
     setPath(path) {
         this._path = '/' + path.toLowerCase() + '/';
         this._path = this._path.replace(new RegExp('[^-_/A-Za-z0-9* ]', 'g'), '');
@@ -22,11 +22,11 @@ NavigationState.prototype = {
         this._path = this._path.replace(/\s+/g, '-');
 
         return this;
-    },
+    }
 
     getPath() {
         return this._path;
-    },
+    }
 
     getPathRegex() {
         let segments = this.getSegments(),
@@ -53,11 +53,11 @@ NavigationState.prototype = {
         }
 
         return new RegExp(regexPath);
-    },
+    }
 
     setSegments(segments) {
         this.setPath(segments.join('/'));
-    },
+    }
 
     getSegments() {
         const segments = this._path.split('/');
@@ -66,20 +66,20 @@ NavigationState.prototype = {
         segments.shift();
 
         return segments;
-    },
+    }
 
     getSegment(index) {
         return this.getSegments()[index];
-    },
+    }
 
     getFirstSegment() {
         return this.getSegment(0);
-    },
+    }
 
     getLastSegment() {
         const segments = this.getSegments();
         return this.getSegment(segments.length - 1);
-    },
+    }
 
     contains(foreignStateOrPathOrArray) {
         if (foreignStateOrPathOrArray instanceof Array) {
@@ -100,7 +100,7 @@ NavigationState.prototype = {
             enoughNativeSegments = nativeSegments.length > foreignSegments.length;
 
         return (isForeignMatch || (isNativeMatch && enoughNativeSegments)) && !tooManyForeignSegments;
-    },
+    }
 
     _containsStateInArray(foreignStatesOrPaths) {
         let i, length = foreignStatesOrPaths.length,
@@ -114,7 +114,7 @@ NavigationState.prototype = {
         }
 
         return false;
-    },
+    }
 
     equals(stateOrPathOrArray) {
         if (stateOrPathOrArray instanceof Array) {
@@ -130,7 +130,7 @@ NavigationState.prototype = {
         }
 
         return subtractedState.getSegments().length === 0;
-    },
+    }
 
     _equalsStateInArray(statesOrPaths) {
         let i, length = statesOrPaths.length,
@@ -144,7 +144,7 @@ NavigationState.prototype = {
         }
 
         return false;
-    },
+    }
 
     subtract(operandStateOrPath) {
         let operand = NavigationState.make(operandStateOrPath),
@@ -157,7 +157,7 @@ NavigationState.prototype = {
         subtractedPath = this.getPath().replace(operand.getPathRegex(), '');
 
         return new NavigationState(subtractedPath);
-    },
+    }
 
     append(stringOrState) {
         let path = stringOrState;
@@ -165,7 +165,7 @@ NavigationState.prototype = {
             path = stringOrState.getPath();
         }
         return this.setPath(this._path + path);
-    },
+    }
 
     prepend(stringOrState) {
         let path = stringOrState;
@@ -173,11 +173,11 @@ NavigationState.prototype = {
             path = stringOrState.getPath();
         }
         return this.setPath(path + this._path);
-    },
+    }
 
     hasWildcard() {
-        return this.getPath().indexOf('/*/') !== 1;
-    },
+        return this.getPath().indexOf('/*/') !== -1;
+    }
 
     mask(sourceStateOrPath) {
         let sourceState = NavigationState.make(sourceStateOrPath),
@@ -193,12 +193,9 @@ NavigationState.prototype = {
         }
 
         return new NavigationState(unmaskedSegments);
-    },
+    }
 
     clone() {
         return new NavigationState(this._path);
     }
-};
-
-
-export default NavigationState;
+}
